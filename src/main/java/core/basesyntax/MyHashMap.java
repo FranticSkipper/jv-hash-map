@@ -19,7 +19,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         Node<K, V> currentNode = this.getNode(key);
 
         if (currentNode == null) {
-            this.elements[position] = new Node<K, V>(hash, key, value, null);
+            this.elements[position] = new Node<>(hash, key, value, null);
         } else {
             Node<K, V> lastNode = null;
 
@@ -33,7 +33,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
                 currentNode = currentNode.next;
             }
 
-            lastNode.next = new Node<K, V>(hash, key, value, null);
+            lastNode.next = new Node<>(hash, key, value, null);
         }
 
         if (++this.size > (int)(capacity * LOAD_FACTOR)) {
@@ -74,8 +74,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
             Node<K, V> node = this.elements[i];
 
             while (node != null) {
-                int newNodeHash = this.hash(node.key);
-                int newPosition = newNodeHash % newCap;
+                int newPosition = node.hash % newCap;
                 Node<K, V> newNode = new Node<>(node.hash, node.key, node.value, null);
 
                 if (newElements[newPosition] == null) {
@@ -101,7 +100,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
 
     private int hash(K key) {
-        return key == null ? 0 : Math.abs(key.hashCode());
+        return key == null ? 0 : key.hashCode() & Integer.MAX_VALUE;
     }
 
     private Node<K, V> getNode(K key) {
@@ -114,7 +113,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         private V value;
         private Node<K, V> next;
 
-        public Node(int hash, K key, V value, Node<K, V> node) {
+        private Node(int hash, K key, V value, Node<K, V> node) {
             this.hash = hash;
             this.key = key;
             this.value = value;
